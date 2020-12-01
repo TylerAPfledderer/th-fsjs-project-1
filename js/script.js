@@ -93,8 +93,26 @@ const getRandomQuote = (quotes) => {
  * `printQuote` function
  ***/
 
+ // To store an ID for the setInterval
+ let intervalID;
+
+ // To trigger setInterval method
+ const autoChange = (func) => {
+   intervalID = setInterval(func, 5000);
+ }
+
+ // To trigger the stopping of the setInterval method
+ const stopAutoChange = () => {
+   clearInterval(intervalID);
+ }
+
 // Function to inject the random quote into the DOM
-const printQuote = () => {
+const printQuote = (event) => {
+
+  // If an event triggered this function, stop the auto interval if it is still running
+  if (event) {
+    stopAutoChange();
+  }
 
 	// Grab ".container" div that store the quote block
 	const container = document.querySelector(".container");
@@ -159,7 +177,7 @@ const printQuote = () => {
 };
 
 printQuote(); // Supply a quote on load...
-window.setInterval(printQuote, 10000); // ...then run the interval!
+autoChange(printQuote); // ...then run the interval!
 
 /***
  * click event listener for the print quote button
