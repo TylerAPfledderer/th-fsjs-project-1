@@ -141,37 +141,25 @@ const printQuote = (event) => {
   /*
    * Function to create an new element and text content from an object property
    * @param {string} objProperty - the object property
-   * @param {string} className - the associated className to the object property.
    * @param el - the element tag to be created
+   * @param {string} className - the associated className to the object property (optional)
    */
-  const createObjElement = (objProperty, el, className) => {
-    // If object property exists, supply the element and content!
-    if (objProperty) {
-      const element = document.createElement(el);
-      element.setAttribute("class", className);
-      element.textContent = objProperty;
 
-      return element;
+  const extraObjInject = (objProp, el, className) => {
+    if (objProp) {
+      return `<${el} ${className ? `class="${className}"` : ''}>${objProp}</${el}>`;
     }
-    return ""; // Return an empty string if object does not exist
-  };
+    return "";
+  }
 
-  // Create the elements that contain object property values from the quote object
-  const quotePara = createObjElement(quote, "p", "quote");
-  const sourcePara = createObjElement(source, "p", "source");
-  const citationSpan = createObjElement(citation, "span", "citation");
-  const yearSpan = createObjElement(year, "span", "year");
-  const tagsPara = createObjElement(tags, "p", quote);
+  container.innerHTML = `
+    <div id="quote-box" class="quote-box">
+      ${extraObjInject(tags, "span")}
+      <p class="quote">${quote}</p>
+      <p class="source">${source}${extraObjInject(citation, "span", "citation")}${extraObjInject(year, "span", "year")}</p>
+    </div>
+  `;
 
-	// Append ".citation" and ".year" span tags as children of sourcePara
-	sourcePara.append(citationSpan, yearSpan);
-
-	// Append quotePara and sourcePara as children of quoteBox
-	quoteBox.append(tagsPara, quotePara, sourcePara);
-
-	// Inject to DOM inside ".container" div element
-  container.appendChild(quoteBox);
-  
   // Generate new background color
   document.body.style.backgroundColor = `rgb(${rgbVal()}, ${rgbVal()}, ${rgbVal()})`;
 };
@@ -187,3 +175,21 @@ autoChange(printQuote); // ...then run the interval!
 document
 	.getElementById("load-quote")
 	.addEventListener("click", printQuote, false);
+
+  	/* Creation of the quote content below
+	 * <div id="quote-box" class="quote-box">
+	 *  <p class="quote">${quote}</p>
+	 *  <p class="source">${source}<span class="citation">${citation}</span><span class="year">${year}</span></p>
+	 * </div>
+	 */
+
+  /*
+   * container.innerHTML = `
+   *  <div id="quote-box" class="quote-box">
+   *    ${extraObjInject(tags, span)}
+   *    <p class="quote">${quote}</p>
+   *    <p class="source">${source}${extraObjInject(citation, span, "citation")}${extraObjInject(year, span, "year")}</p>
+   *  </div>
+   * `;
+   * 
+   */
